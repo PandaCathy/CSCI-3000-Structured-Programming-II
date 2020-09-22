@@ -1,0 +1,157 @@
+/*
+Cathy Fung
+CSCI 3000-HW3
+15 Setpember 2017
+This is a C++ simple hangman game using pointer.
+*/
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <ctime>
+#include <vector>
+#include <cstdlib>
+
+using namespace std;
+
+const int SIZE = 30;
+int wrongGuesses = 0;
+
+// A function to create our initial blanked-out phrase
+void printVector(vector<char> str) {
+	for (unsigned i = 0; i < str.size(); i++) {
+		cout << str.at(i);
+	}
+	cout << endl;
+}
+
+int main() {
+	// List of phrase for the game
+	char phrase1[SIZE] = "Back to Square One\n";
+	char phrase2[SIZE] = "Easy As Pie\n";
+	char phrase3[SIZE] = "Elephant in the Room\n";
+	char phrase4[SIZE] = "Fish Out Of Water\n";
+	char phrase5[SIZE] = "Needle In a Haystack\n";
+
+	// Random number generator
+	srand(time(0));
+	// Roll a number between 1 and 5
+	int number = rand() % 5 + 1; 
+	
+	// Use pointer to handle our phrase
+	char* phrase; 
+	// A switch to determine which phrase is going to use
+	switch (number) {
+	case 1:
+		phrase = phrase1;
+		break;
+	case 2:
+		phrase = phrase2;
+		break;
+	case 3:
+		phrase = phrase3;
+		break;
+	case 4:
+		phrase = phrase4;
+		break;
+	case 5:
+		phrase = phrase5;
+		break;
+	default:
+		phrase = phrase1;
+		break;
+	}
+
+	// Setup a new display vector
+	vector<char> display; 
+	// Save position of phrase pointer
+	char* temp = phrase;
+	// Until we reach the end of the phrase
+	while (*phrase != '\n') {
+		// If position is a space
+		if (*phrase == ' ')
+			// Push a space into display vector
+			display.push_back(' '); 
+		else
+			// Otherwise, push an underline
+			display.push_back('_');
+		// Increment pointer to next phrase character
+		phrase++; // 
+	}
+	// Restore pointer back to beginning of phrase
+	phrase = temp; 
+
+	//--------------------------------------------------------------
+
+	// Start of the game
+	cout << "Welcome to hangman!\n"; 
+	cout << "Here is your board: ";
+	printVector(display);
+	cout << "\n\n";
+
+	bool youWin = false;
+	// Main game loop
+	// The player win when they guess do not guess wrong more than 10 times
+	while (wrongGuesses < 10 && youWin == false) {
+		cout << "Guess a character: ";
+		char guess;
+		cin >> guess;
+		
+		char guess1 = toupper(guess);
+		char guess2 = tolower(guess);
+
+		// Save position of phrase pointer
+		char* temp = phrase; 
+		// Set array position to zero
+		int position = 0; 
+		bool goodGuess = false;
+		// Until we reach the end of the phrase
+		while (*phrase != '\n') {
+			if (*phrase == guess1) {
+				// Update display vector with found character(s)
+				display.at(position) = guess2;
+				goodGuess = true;
+			}
+			else if (*phrase == guess2) {
+				display.at(position) = guess2; 
+				goodGuess = true;
+			}
+			// Increment pointer
+			phrase++;
+			// Increment position
+			position++; 
+		}
+		// Restore pointer
+		phrase = temp;
+		// Reset position
+		position = 0; 
+		
+		if (goodGuess) {
+			cout << "Good guess! Here's the updated board: ";
+			printVector(display);
+			cout << endl;
+			// Set goodGuess back to false
+			goodGuess = false; 
+		}
+		else {
+			// Increment wrong guesses
+			wrongGuesses++; 
+			cout << "\nSorry! " << guess << " is not part of the phrase." << endl;
+			cout << "You have " << 10 - wrongGuesses << " guesses remaining." << endl;
+			cout << "Here's the board again: ";
+			printVector(display);
+			cout << endl;
+		}
+		// If display vector contains no underline characters, display player winning message
+		if (!(std::find(display.begin(), display.end(), '_') != display.end()))	{
+			cout << "Hooray! You win!\n";
+			cout << "The board one last time: ";
+			printVector(display);
+			youWin = true;
+		}
+	}
+
+	system("pause");
+	return 0;
+
+}
