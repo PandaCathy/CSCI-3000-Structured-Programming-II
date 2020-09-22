@@ -1,4 +1,4 @@
-# CSCI-3000-Structured-ProgrammingII
+# CSCI-3000-Structured-Programming-II
 CSCI-3000 - Structured Programming II (C++)
 
 These are my works for college.
