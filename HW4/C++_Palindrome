@@ -1,0 +1,41 @@
+/*
+Cathy Fung
+CSCI 3000-HW5
+8 October 2017
+This is a C++ program checking if the phrase is palindrome.
+*/
+
+#include <iostream>
+#include <cstring>
+
+using namespace std;
+
+bool isPalindrome(char* cstr) {
+	// First character of the string
+	char* front = cstr;
+	// Last character of the string
+	char* back = cstr + strlen(cstr) - 1;
+
+	while (front < back) {
+		// If the first letter is different from the last letter
+		if (*front != *back) {
+			return false;
+		}
+		else {
+			front++;
+			back--;
+		}
+	}
+	return true;
+}
+
+int main() {
+	char s1[] = "neveroddoreven";
+	char s2[] = "not a palindrome";
+	// True
+	cout << isPalindrome(s1) << endl;
+	// False
+	cout << isPalindrome(s2) << endl; 
+
+	return 0;
+}
