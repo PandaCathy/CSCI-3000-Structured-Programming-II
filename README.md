@@ -3,7 +3,7 @@ CSCI-3000 - Structured Programming II (C++)
 
 These are my works for college.
 
-**Please do use my example for your work or your company work.**
+**Please do not use my example for your work or your company work.**
 
 ### Compiling
 
