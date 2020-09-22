@@ -1,0 +1,211 @@
+/*
+Cathy Fung
+CSCI 3000-HW5
+30 October 2017
+This is a C++ program to read a file "employees.txt" and put the employees infomation into the array. 
+It will print out the choices of print all employees, print by department, and print by salary for user.
+*/
+
+#include <iostream>
+#include <string>
+#include <fstream>
+
+using namespace std;
+
+class Employee
+{
+
+private:
+	int EmployeeID;
+	string EmployeeName;
+	int DepartmentID;
+	string DepartmentName;
+	int Salary;
+
+public:
+
+	// Default constructor 
+	Employee()
+	{
+		EmployeeID = 0;
+		EmployeeName = "Name";
+		DepartmentID = 0;
+		DepartmentName = "Department";
+		Salary = 0;
+	}
+
+	// Parameter constructor
+	Employee(int employeeID, string employeeName, int departmentID,
+		string departmentName, int salary)
+	{
+		EmployeeID = employeeID;
+		EmployeeName = employeeName;
+		DepartmentID = departmentID;
+		DepartmentName = departmentName;
+		Salary = salary;
+	}
+
+	// Get methods
+	int GetEmployeeID() { return EmployeeID; }
+	string GetEmployeeName() { return EmployeeName; }
+	int GetDepartmentID() { return DepartmentID; }
+	string GetDepartmentName() { return DepartmentName; }
+	int GetSalary() { return Salary; }
+
+	// Set methods
+	void SetEmployeeID(int employeeID) { EmployeeID = employeeID; }
+	void SetEmployeeName(string employeeName) { EmployeeName = employeeName; }
+	void SetDepartmentID(int departmentID) { DepartmentID = departmentID; }
+	void SetDepartmentName(string departmentName) { DepartmentName = departmentName; }
+	void SetSalary(int salary) { Salary = salary; }
+
+};
+
+// Function to prints all employees in the dynamically allocated Employee array.
+void PrintAllEmployees(Employee *ptr, int size)
+{
+	for (int i = 0; i < size; i++)
+	{
+		cout << ptr[i].GetEmployeeID() << " ";
+		cout << ptr[i].GetEmployeeName() << " ";
+		cout << ptr[i].GetDepartmentID() << " ";
+		cout << ptr[i].GetDepartmentName() << " ";
+		cout << "$" << ptr[i].GetSalary() << endl;
+	}
+	cout << endl;
+}
+
+// Function to prints only the employees with a DepartmentID matching the key.
+void PrintByDepartment(Employee *ptr, int size, int key)
+{
+	for (int i = 0; i < size; i++)
+	{
+		// Check the employees DepartmentID with the key
+		if (ptr[i].GetDepartmentID() == key)
+		{
+			cout << ptr[i].GetEmployeeID() << " ";
+			cout << ptr[i].GetEmployeeName() << " ";
+			cout << ptr[i].GetDepartmentID() << " ";
+			cout << ptr[i].GetDepartmentName() << " ";
+			cout << "$" << ptr[i].GetSalary() << endl;
+		}
+	}
+	cout << endl;
+}
+
+// Prints only the employees with a salary greater than or equal to the key.
+void PrintBySalary(Employee *ptr, int size, int key)
+{
+	for (int i = 0; i < size; i++)
+	{
+		if (ptr[i].GetSalary() >= key)
+		{
+			cout << ptr[i].GetEmployeeID() << " ";
+			cout << ptr[i].GetEmployeeName() << " ";
+			cout << ptr[i].GetDepartmentID() << " ";
+			cout << ptr[i].GetDepartmentName() << " ";
+			cout << "$" << ptr[i].GetSalary() << endl;
+		}
+	}
+	cout << endl;
+}
+
+int main()
+{
+	ifstream employeeFile;
+	employeeFile.open("employees.txt");
+
+	// If there was a problem opening the file, exit the program.
+	if (!employeeFile.is_open()) 
+	{
+		// Error message
+		cout << "Problem with the file opening opening!" << endl;
+		exit(0);
+	}
+
+	// Read the first line, which is "Employees: 100"
+	string item;
+	// Read "Employees:"
+	getline(employeeFile, item, ' ');
+	// Read "100"
+	getline(employeeFile, item, '\n'); 
+	// Convert string "100" to int 100. Save 100 to variable.
+	int numberOfEmployees = atoi(item.c_str()); 
+	// Create the dynamic Employee array.
+	Employee *pointer = new Employee[numberOfEmployees]; 
+
+	// Read all employees and store their info into the Employee array.
+	for (int i = 0; i < numberOfEmployees; i++)
+	{
+		// Get employee's ID
+		getline(employeeFile, item, ' '); 
+		int employeeID = atoi(item.c_str());
+		// Get employee's name
+		getline(employeeFile, item, ' '); 
+		string employeeName = item;
+		// Get employee's department ID
+		getline(employeeFile, item, ' '); 
+		int departmentID = atoi(item.c_str());
+		// Get employee's department name
+		getline(employeeFile, item, ' ');
+		string departmentName = item;
+		// Get employee's salary
+		getline(employeeFile, item, '\n');
+		int salary = atoi(item.c_str());
+
+		// Put the employee's info into the array at i position.
+		pointer[i].SetEmployeeID(employeeID);
+		pointer[i].SetEmployeeName(employeeName);
+		pointer[i].SetDepartmentID(departmentID);
+		pointer[i].SetDepartmentName(departmentName);
+		pointer[i].SetSalary(salary);
+	}
+
+	// Show the user functions
+	int choice;
+	do
+	{
+		cout << "Select function:" << endl;
+		cout << "1) Print all employees" << endl;
+		cout << "2) Print by department" << endl;
+		cout << "3) Print by salary" << endl;
+		cout << "4) Exit program" << endl;
+		cout << endl;
+
+		cin >> choice;
+
+		
+		// A switch based on user choice
+		switch (choice)
+		{
+		case 1:
+			PrintAllEmployees(pointer, numberOfEmployees);
+			break;
+		case 2:
+			cout << "Enter department ID: ";
+			int departmentID;
+			cin >> departmentID;
+			cout << endl;
+			PrintByDepartment(pointer, numberOfEmployees, departmentID);
+			break;
+		case 3:
+			cout << "Enter salary amount: ";
+			int salary;
+			cin >> salary;
+			cout << endl;
+			PrintBySalary(pointer, numberOfEmployees, salary);
+			break;
+		case 4:
+			// Exit the switch and proceed to end of DO loop.
+			break;
+		// Error message  if user did not put in number 1-4
+		default:
+			cout << "Invalid input. Please try again." << endl;
+			break;
+		}
+
+	} while (choice != 4);
+
+	system("pause");
+	return 0;
+}
